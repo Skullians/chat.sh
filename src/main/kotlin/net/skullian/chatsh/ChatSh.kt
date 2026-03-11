@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment
 import net.skullian.chatsh.dispatcher.CommandDispatcher
 import net.skullian.chatsh.expansion.Expander
 import net.skullian.chatsh.expansion.ExpansionRegistry
-import net.skullian.chatsh.expansion.completion.ExpansionCompleter
 import net.skullian.chatsh.expansion.data.ExpansionCtx
 import net.skullian.zenith.core.flavor.Flavor
 import net.skullian.zenith.core.flavor.FlavorOptions
@@ -22,7 +21,6 @@ object ChatSh : ClientModInitializer {
 
     val rootContext = ExpansionCtx() // will persist later
     val rootDispatcher = CommandDispatcher(rootContext)
-    val rootCompleter = ExpansionCompleter(rootContext)
 
     override fun onInitializeClient() {
         this.flavor = Flavor.create(

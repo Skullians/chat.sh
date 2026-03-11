@@ -8,19 +8,14 @@ import net.minecraft.client.gui.components.CommandSuggestions
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.ChatScreen
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.network.chat.Component
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.dispatcher.DispatchResult
-import net.skullian.chatsh.expansion.ChatExpander
-import net.skullian.chatsh.expansion.completion.data.HintType
-import net.skullian.chatsh.mixin.accessor.CommandSuggestionsAccessor
 import net.skullian.chatsh.screen.ExpansionRenderer
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Shadow
 import org.spongepowered.asm.mixin.injection.At
 import org.spongepowered.asm.mixin.injection.Inject
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
-import java.util.concurrent.CompletableFuture
 
 /**
  * This is a class.
@@ -71,53 +66,6 @@ abstract class ChatScreenMixin {
                 }
             }
         }
-    }
-
-    @Inject(
-        method = ["onEdited"],
-        at = [At("RETURN")]
-    )
-    private fun onEdited(text: String, ci: CallbackInfo) {
-        if (text.isBlank() || !text.hasShellSyntax()) return
-
-        val cursor = input.cursorPosition
-        val textUpToCursor = text.take(cursor)
-        val tokenStart = textUpToCursor.lastIndexOf(' ') + 1
-
-        val accessor = commandSuggestions as CommandSuggestionsAccessor
-
-        val expansionResult = ChatExpander.expand(text, ChatSh.rootContext)
-        if (expansionResult.isMultiCommand) {
-            commandSuggestions.hide()
-            accessor.pendingSuggestions = null
-            return
-        }
-
-        val hints = ChatSh.rootCompleter.hints(text, cursor)
-            .filter { it.type == HintType.VARIABLE || it.type == HintType.HISTORY }
-        if (hints.isEmpty()) return
-        val builder = SuggestionsBuilder(text, tokenStart)
-
-        for (hint in hints) {
-            when (hint.type) {
-                HintType.VARIABLE -> {
-                    val apply = hint.insertText?.takeIf { it.isNotEmpty() } ?: continue
-                    builder.suggest(textUpToCursor.take(tokenStart) + apply, Component.literal(hint.label))
-                }
-                HintType.HISTORY -> {
-                    val apply = hint.insertText?.takeIf { it.isNotEmpty() } ?: continue
-                    builder.suggest(apply, Component.literal(hint.label))
-                }
-                else -> continue
-            }
-        }
-
-        val suggestions: Suggestions = builder.build()
-        if (suggestions.isEmpty) return
-
-        accessor.pendingSuggestions = CompletableFuture.completedFuture(suggestions)
-        commandSuggestions.setAllowSuggestions(true)
-        commandSuggestions.showSuggestions(true)
     }
 
     @Inject(

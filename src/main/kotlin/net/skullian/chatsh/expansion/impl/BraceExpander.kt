@@ -26,7 +26,7 @@ object BraceExpander : Expander {
         val inside = input.substring(openIdx + 1, closeIdx)
         val suffix = input.substring(closeIdx + 1)
 
-        val alternatives = getContent(inside)
+        val alternatives = parseContent(inside)
             ?: return listOf(input)
 
         return alternatives.flatMap { alt ->
@@ -41,21 +41,17 @@ object BraceExpander : Expander {
         for (i in s.indices) {
             when (s[i]) {
                 '{' -> {
-                    if (depth == 0) openIdx = i
-                    depth++
+                    if (depth++ == 0) openIdx = i
                 }
                 '}' -> {
-                    depth--
-                    if (depth == 0 && openIdx >= 0) {
-                        return Pair(openIdx, i)
-                    }
+                    if (--depth == 0 && openIdx >= 0) return openIdx to i
                 }
             }
         }
         return null
     }
 
-    private fun getContent(inside: String): List<String>? {
+    private fun parseContent(inside: String): List<String>? {
         if (inside.isEmpty()) return null
 
         val rangeResult = tryParseRange(inside)
@@ -67,10 +63,10 @@ object BraceExpander : Expander {
         return parts.flatMap { expandOne(it.trim()) }
     }
 
-    private fun tryParseRange(inside: String): List<String>? {
-        if (splitTopLevel(inside, ',').size > 1) return null
+    private fun tryParseRange(content: String): List<String>? {
+        if (splitTopLevel(content, ',').size > 1) return null
 
-        val parts = inside.split("..")
+        val parts = content.split("..")
         if (parts.size !in 2..3) return null
 
         val start = parts[0].trim()
@@ -125,12 +121,13 @@ object BraceExpander : Expander {
                 '{' -> depth++
                 '}' -> depth--
                 delimiter -> if (depth == 0) {
-                    parts.add(s.substring(start, i))
+                    parts += s.substring(start, i)
                     start = i + 1
                 }
             }
         }
-        parts.add(s.substring(start))
+
+        parts += s.substring(start)
         return parts
     }
 }
