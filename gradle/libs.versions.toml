@@ -1,0 +1,11 @@
+[versions]
+reflections = "0.10.2"
+caffeine = "3.2.3"
+
+[libraries]
+reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+
+junit-bom = "org.junit:junit-bom:5.10.0"
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }

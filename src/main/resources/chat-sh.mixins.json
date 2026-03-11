@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "net.skullian.chatsh.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+        "accessor.CommandSuggestionsAccessor",
+		"impl.ChatScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

@@ -1,0 +1,5 @@
+{
+    "message.chat-sh.expander.history": "<gray>Expanding:</gray> <commands>",
+    "message.chat-sh.expander.sending": "<gray>Sending <white><count></white> commands...</gray>",
+    "message.chat-sh.expander.too-many": "<red>Expansion produced <count> commands (max <max>). Aborted.</red>"
+}
