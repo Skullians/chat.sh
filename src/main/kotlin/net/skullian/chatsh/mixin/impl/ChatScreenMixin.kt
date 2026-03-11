@@ -29,12 +29,6 @@ abstract class ChatScreenMixin {
     @Shadow
     protected lateinit var input: EditBox
 
-    @Shadow
-    lateinit var commandSuggestions: CommandSuggestions
-
-    @Shadow
-    protected lateinit var initial: String
-
     @Suppress("CAST_NEVER_SUCCEEDS")
     private val asScreen get() =
         this as Screen
