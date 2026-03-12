@@ -74,7 +74,7 @@ object ExpansionRenderer {
                     x, panelY + PADDING_Y, DOT_COLOR
                 )
             }
-            val label = if (cmd.length > 30) cmd.take(27) + "…" else cmd
+            val label = if (cmd.length > 30) cmd.take(27) + "..." else cmd
             x = drawString(graphics, font, label, x, panelY + PADDING_Y, CMD_COLOR)
 
             if (x > screenWidth - 60) {
