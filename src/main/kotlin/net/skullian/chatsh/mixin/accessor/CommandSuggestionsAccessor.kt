@@ -4,6 +4,7 @@ import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.suggestion.Suggestions
 import net.minecraft.client.gui.components.CommandSuggestions
 import net.minecraft.client.multiplayer.ClientSuggestionProvider
+import net.minecraft.util.FormattedCharSequence
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.gen.Accessor
 import java.util.concurrent.CompletableFuture
@@ -23,5 +24,9 @@ interface CommandSuggestionsAccessor {
 
     @get:Accessor("currentParse")
     val currentParse: ParseResults<ClientSuggestionProvider>?
+
+    @get:Accessor("commandUsage")
+    val commandUsage: List<FormattedCharSequence>
+
 }
 

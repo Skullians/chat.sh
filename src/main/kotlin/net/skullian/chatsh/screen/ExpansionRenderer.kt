@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.expansion.ChatExpander
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
+import net.skullian.chatsh.expansion.brig.BrigadierCtx
+import org.slf4j.LoggerFactory
 
 /**
  * This is a class.
@@ -33,6 +35,8 @@ object ExpansionRenderer {
         val client = Minecraft.getInstance()
         val font = client.font
 
+        val suggestionsHeight = BrigadierCtx.getSuggestionsListHeight()
+
         val input = client.screen?.let {
             try {
                 val field = it.javaClass.getDeclaredField("input")
@@ -47,7 +51,7 @@ object ExpansionRenderer {
         if (!result.isMultiCommand) return
 
         val commands = result.commands
-        val panelY = screenHeight - 14 - PANEL_HEIGHT - 1 // shove this shit above the input box
+        val panelY = screenHeight - 14 - PANEL_HEIGHT - 1 - suggestionsHeight // shove this shit above the input box
 
         graphics.fill(2, panelY, screenWidth - 2, panelY + PANEL_HEIGHT, BG_COLOR)
 

@@ -15,20 +15,20 @@ import java.util.concurrent.CompletableFuture
  */
 object BrigadierCtx {
 
-    @Volatile
-    private var currentParse: ParseResults<ClientSuggestionProvider>? = null
-
-    @Volatile
-    private var pendingSuggestions: CompletableFuture<Suggestions>? = null
+    @Volatile private var commandUsage: List<*> = emptyList<Any>()
+    @Volatile private var currentParse: ParseResults<ClientSuggestionProvider>? = null
+    @Volatile private var pendingSuggestions: CompletableFuture<Suggestions>? = null
 
     fun update(accessor: CommandSuggestionsAccessor) {
         currentParse = accessor.currentParse
         pendingSuggestions = accessor.pendingSuggestions
+        commandUsage = accessor.commandUsage
     }
 
     fun clear() {
         currentParse = null
         pendingSuggestions = null
+        commandUsage = emptyList<Any>()
     }
 
     fun getCompletions(): Suggestions? {
@@ -43,6 +43,17 @@ object BrigadierCtx {
         val future = dispatcher.getCompletionSuggestions(parse, cursorPos)
         if (!future.isDone) return null
         return future.get()
+    }
+
+    fun getSuggestionsListHeight(): Int {
+        val future = pendingSuggestions?.takeIf { it.isDone } ?: return 0
+        val suggestions = runCatching { future.get() }.getOrNull() ?: return 0
+        if (!suggestions.isEmpty) {
+            val visibleRows = minOf(suggestions.list.size, 10)
+            return visibleRows * 12
+        }
+        // no suggestions, but usage/err lines shown instead
+        return commandUsage.size * 12
     }
 
     fun getParse(): ParseResults<ClientSuggestionProvider>? = currentParse
