@@ -1,7 +1,9 @@
 package net.skullian.chatsh.mixin.accessor
 
+import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.suggestion.Suggestions
 import net.minecraft.client.gui.components.CommandSuggestions
+import net.minecraft.client.multiplayer.ClientSuggestionProvider
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.gen.Accessor
 import java.util.concurrent.CompletableFuture
@@ -18,5 +20,8 @@ interface CommandSuggestionsAccessor {
     @get:Accessor("pendingSuggestions")
     @set:Accessor("pendingSuggestions")
     var pendingSuggestions: CompletableFuture<Suggestions>?
+
+    @get:Accessor("currentParse")
+    val currentParse: ParseResults<ClientSuggestionProvider>?
 }
 

@@ -10,6 +10,9 @@ import net.minecraft.client.gui.screens.ChatScreen
 import net.minecraft.client.gui.screens.Screen
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.dispatcher.DispatchResult
+import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
+import net.skullian.chatsh.expansion.brig.BrigadierCtx
+import net.skullian.chatsh.mixin.accessor.CommandSuggestionsAccessor
 import net.skullian.chatsh.screen.ExpansionRenderer
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Shadow
@@ -28,6 +31,8 @@ abstract class ChatScreenMixin {
 
     @Shadow
     protected lateinit var input: EditBox
+    @Shadow
+    lateinit var commandSuggestions: CommandSuggestions
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     private val asScreen get() =
@@ -63,6 +68,15 @@ abstract class ChatScreenMixin {
     }
 
     @Inject(
+        method = ["onEdited"],
+        at = [At("RETURN")]
+    )
+    private fun onEdited(text: String, ci: CallbackInfo) {
+        val accessor = commandSuggestions as CommandSuggestionsAccessor
+        BrigadierCtx.update(accessor)
+    }
+
+    @Inject(
         method = ["render"],
         at = [At("RETURN")]
     )
@@ -75,14 +89,10 @@ abstract class ChatScreenMixin {
         at = [At("RETURN")]
     )
     private fun onRemoved(ci: CallbackInfo) {
+        BrigadierCtx.clear()
+
         if (input.value.hasShellSyntax()) { // temporary fix that will be permanent
             Minecraft.getInstance().gui.chat.discardDraft()
         }
     }
-
-    private fun String.hasShellSyntax(): Boolean =
-        contains("{") ||
-            contains("$") ||
-            contains(";") ||
-            startsWith("!!")
 }

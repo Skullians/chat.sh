@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.expansion.ChatExpander
+import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 
 /**
  * This is a class.
@@ -111,7 +112,4 @@ object ExpansionRenderer {
         graphics.drawString(font, component, x, y, color, false)
         return x + font.width(component)
     }
-
-    private fun String.hasShellSyntax() =
-        contains("{") || contains("$") || contains(";") || startsWith("!!")
 }

@@ -24,7 +24,7 @@ object ChatExpander {
         ctx.commandHistory.add(input)
 
         if (input.isBlank()) return ExpansionResult(listOf(input))
-        if (input.contains('$')) return compute(input, ctx)
+        if (input.containsVariable() || input.containsGlob()) return compute(input, ctx)
 
         return cache.get(input) { compute(it, ctx) }
     }
@@ -52,4 +52,18 @@ object ChatExpander {
 
         return ExpansionResult(inputs.distinct(), errors)
     }
+
+    fun String.containsGlob() =
+        contains('*') || contains('?') || contains('[')
+
+    fun String.hasShellSyntax(): Boolean =
+        contains('{') ||
+        contains('$') ||
+        contains(';') ||
+        contains('*') ||
+        contains('?') ||
+        contains('[') ||
+        startsWith("!!")
+
+    fun String.containsVariable(): Boolean = contains('$')
 }
