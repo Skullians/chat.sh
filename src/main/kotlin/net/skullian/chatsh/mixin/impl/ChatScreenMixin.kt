@@ -91,8 +91,10 @@ abstract class ChatScreenMixin {
     private fun onRemoved(ci: CallbackInfo) {
         BrigadierCtx.clear()
 
+        //? if >=1.21.11 {
         if (input.value.hasShellSyntax()) { // temporary fix that will be permanent
             Minecraft.getInstance().gui.chat.discardDraft()
         }
+        //?}
     }
 }

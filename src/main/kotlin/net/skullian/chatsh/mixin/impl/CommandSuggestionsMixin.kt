@@ -9,26 +9,38 @@ import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.expansion.ChatExpander
+import net.skullian.chatsh.expansion.ChatExpander.containsGlob
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 import net.skullian.chatsh.expansion.brig.ExpansionFormatter
+import net.skullian.chatsh.expansion.brig.GlobSuggestionInjector
+import net.skullian.chatsh.mixin.accessor.CommandSuggestionsAccessor
 import net.skullian.chatsh.mixin.accessor.EditBoxAccessor
 import org.spongepowered.asm.mixin.Final
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.Shadow
+import org.spongepowered.asm.mixin.Unique
 import org.spongepowered.asm.mixin.injection.At
 import org.spongepowered.asm.mixin.injection.Inject
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
+import java.util.concurrent.CompletableFuture
 
 @Mixin(CommandSuggestions::class)
 abstract class CommandSuggestionsMixin {
 
-    @Shadow @Final lateinit var input: EditBox
+    @Shadow lateinit var input: EditBox
     @Shadow @Final private val fillColor: Int = 0
     @Shadow private val commandUsage: MutableList<FormattedCharSequence> = mutableListOf()
 
+    @Unique private var injectionTask: CompletableFuture<*>? = null
+
     @Inject(method = ["<init>"], at = [At("TAIL")])
     private fun onInit(ci: CallbackInfo) {
+        //? if >=1.21.11 {
         (input as EditBoxAccessor).getFormatters().add(0, ExpansionFormatter)
+        //?} else {
+        /*val acc = input as EditBoxAccessor
+        GlobSuggestionInjector.install(input, acc)*/
+        //?}
     }
 
     @Inject(method = ["updateCommandInfo"], at = [At("RETURN")])
@@ -36,6 +48,36 @@ abstract class CommandSuggestionsMixin {
         if (input.value.hasShellSyntax()) {
             commandUsage.clear()
         }
+        injectGlobSuggestions()
+    }
+
+    private fun injectGlobSuggestions() {
+        val raw = input.value
+        if (!raw.containsGlob()) return
+
+        val accessor = this as CommandSuggestionsAccessor
+        if (accessor.keepSuggestions) return
+
+        val cursorPos = input.cursorPosition
+
+        val lastSpace = raw.lastIndexOf(' ', cursorPos - 1)
+        val currentToken = raw.substring(if (lastSpace < 0) 0 else lastSpace + 1, cursorPos)
+        if (currentToken.containsGlob()) return
+
+        val connection = Minecraft.getInstance().connection ?: return
+        val dispatcher = connection.commands
+        val provider = connection.suggestionsProvider
+        val suffixLen = raw.length - cursorPos
+
+        // cancel any ongoing task
+        injectionTask?.cancel(false)
+
+        // workaround for mixins to not die with lambdas
+        injectionTask = GlobSuggestionInjector.start(
+            raw, cursorPos, currentToken, suffixLen,
+            dispatcher, provider,
+            accessor, input, this as CommandSuggestions
+        )
     }
 
     @Inject(method = ["renderUsage"], at = [At("HEAD")], cancellable = true)

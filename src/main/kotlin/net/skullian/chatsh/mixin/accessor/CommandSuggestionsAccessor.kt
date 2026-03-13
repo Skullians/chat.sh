@@ -28,5 +28,8 @@ interface CommandSuggestionsAccessor {
     @get:Accessor("commandUsage")
     val commandUsage: List<FormattedCharSequence>
 
+    @get:Accessor("keepSuggestions")
+    val keepSuggestions: Boolean
+
 }
 
