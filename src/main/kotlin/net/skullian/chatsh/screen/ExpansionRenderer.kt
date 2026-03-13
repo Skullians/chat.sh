@@ -51,7 +51,7 @@ object ExpansionRenderer {
         if (!result.isMultiCommand) return
 
         val commands = result.commands
-        val panelY = screenHeight - 14 - PANEL_HEIGHT - 1 - suggestionsHeight // shove this shit above the input box
+        val panelY = screenHeight - 14 - PANEL_HEIGHT - suggestionsHeight // shove this shit above the input box
 
         graphics.fill(2, panelY, screenWidth - 2, panelY + PANEL_HEIGHT, BG_COLOR)
 
