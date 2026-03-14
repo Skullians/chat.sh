@@ -36,10 +36,14 @@ dependencies {
 tasks {
     processResources {
         inputs.property("version", version)
+        inputs.property("minecraft", sc.current.version)
 
-        filesMatching("fabric.mod.json") {
-            expand("version" to version)
-        }
+        val props = mapOf(
+            "version" to version,
+            "minecraft" to sc.current.version
+        )
+
+        filesMatching("fabric.mod.json") { expand(props) }
     }
 
     jar {
@@ -56,6 +60,13 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
+    }
+
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
+        into(rootProject.rootDir.resolve("target/"))
+        dependsOn("build")
     }
 }
 
@@ -78,9 +89,5 @@ publishing {
 			artifactId = base.archivesName.get()
 			from(components["java"])
 		}
-	}
-
-	repositories {
-
 	}
 }
