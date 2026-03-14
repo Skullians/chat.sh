@@ -3,7 +3,6 @@ package net.skullian.chatsh.expansion.brig
 import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.suggestion.Suggestions
 import net.minecraft.client.Minecraft
-import net.minecraft.client.multiplayer.ClientSuggestionProvider
 import net.skullian.chatsh.mixin.accessor.CommandSuggestionsAccessor
 import java.util.concurrent.CompletableFuture
 

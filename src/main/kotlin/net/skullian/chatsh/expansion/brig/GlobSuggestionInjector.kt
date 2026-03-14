@@ -8,7 +8,6 @@ import com.mojang.brigadier.context.StringRange
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.CommandSuggestions
 import net.minecraft.client.gui.components.EditBox
-import net.minecraft.client.multiplayer.ClientSuggestionProvider
 import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.expansion.ChatExpander
 import net.skullian.chatsh.expansion.brig.ExpansionFormatter
@@ -22,10 +21,10 @@ import java.util.concurrent.CompletableFuture
 internal object GlobSuggestionInjector {
 
     //? if <1.21.11 {
-    /*fun install(input: EditBox, acc: EditBoxAccessor) {
+    fun install(input: EditBox, acc: EditBoxAccessor) {
         val prev = acc.formatter
         input.setFormatter(java.util.function.BiFunction { s, i -> ExpansionFormatter.format(s, i) ?: prev.apply(s, i) })
-    }*/
+    }
     //?}
 
     fun start(
@@ -33,8 +32,8 @@ internal object GlobSuggestionInjector {
         cursorPos: Int,
         currentToken: String,
         suffixLen: Int,
-        dispatcher: CommandDispatcher<ClientSuggestionProvider>,
-        provider: ClientSuggestionProvider,
+        dispatcher: CommandDispatcher<SuggestionProvider>,
+        provider: SuggestionProvider,
         accessor: CommandSuggestionsAccessor,
         input: EditBox,
         commandSuggestions: CommandSuggestions,

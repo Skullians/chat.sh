@@ -1,9 +1,16 @@
 package net.skullian.chatsh.expansion.brig
 
 import com.mojang.brigadier.ParseResults
-import net.minecraft.client.multiplayer.ClientSuggestionProvider
 
-fun ParseResults<ClientSuggestionProvider>.isExecutable(): Boolean {
+//? if >=1.21.8 {
+/*import net.minecraft.client.multiplayer.ClientSuggestionProvider
+typealias SuggestionProvider = ClientSuggestionProvider
+*///?} else {
+import net.minecraft.commands.SharedSuggestionProvider
+typealias SuggestionProvider = SharedSuggestionProvider
+//?}
+
+fun ParseResults<SuggestionProvider>.isExecutable(): Boolean {
     var ctx = context
     while (true) {
         if (ctx.command != null) return true
@@ -11,5 +18,5 @@ fun ParseResults<ClientSuggestionProvider>.isExecutable(): Boolean {
     }
 }
 
-fun ParseResults<ClientSuggestionProvider>.succeeded(): Boolean =
+fun ParseResults<SuggestionProvider>.succeeded(): Boolean =
     (!reader.canRead() || reader.remaining.isBlank()) && isExecutable()

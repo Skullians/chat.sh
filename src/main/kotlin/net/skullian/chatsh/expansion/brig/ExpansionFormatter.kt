@@ -4,9 +4,8 @@ import com.mojang.brigadier.ParseResults
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 //? if >=1.21.11 {
-import net.minecraft.client.gui.components.EditBox
-//?}
-import net.minecraft.client.multiplayer.ClientSuggestionProvider
+/*import net.minecraft.client.gui.components.EditBox
+*///?}
 import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
 import net.skullian.chatsh.ChatSh
@@ -14,9 +13,9 @@ import net.skullian.chatsh.expansion.ChatExpander
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 
 //? if >=1.21.11 {
-object ExpansionFormatter : EditBox.TextFormatter {
-//?} else {
-/*object ExpansionFormatter {*/
+/*object ExpansionFormatter : EditBox.TextFormatter {
+*///?} else {
+object ExpansionFormatter {
 //?}
 
     private val ARGUMENT_STYLES = listOf(
@@ -36,9 +35,9 @@ object ExpansionFormatter : EditBox.TextFormatter {
     private var cachedResult: FormattedCharSequence? = null
 
     //? if >=1.21.11 {
-    override fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
-    //?} else {
-    /*fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {*/
+    /*override fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
+    *///?} else {
+    fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
     //?}
         if (!raw.startsWith("/") || !raw.hasShellSyntax()) {
             cachedInput = null; cachedResult = null
@@ -64,7 +63,7 @@ object ExpansionFormatter : EditBox.TextFormatter {
 
         val dispatcher = connection.commands
         val provider = connection.suggestionsProvider
-        val parses: List<ParseResults<ClientSuggestionProvider>> = commands.map { cmd ->
+        val parses: List<ParseResults<SuggestionProvider>> = commands.map { cmd ->
             dispatcher.parse(cmd.removePrefix("/"), provider)
         }
 
@@ -87,7 +86,7 @@ object ExpansionFormatter : EditBox.TextFormatter {
     private fun color(
         input: String,
         expanded: String,
-        parse: ParseResults<ClientSuggestionProvider>,
+        parse: ParseResults<SuggestionProvider>,
         styles: Array<Style>
     ) {
         val expandedRaw = expanded.removePrefix("/")
@@ -130,7 +129,7 @@ object ExpansionFormatter : EditBox.TextFormatter {
 
     private enum class Validity(val style: Style) { VALID(STYLE_VALID), PARTIAL(STYLE_PARTIAL), INVALID(STYLE_INVALID) }
 
-    private fun aggregate(parses: List<ParseResults<ClientSuggestionProvider>>): Validity {
+    private fun aggregate(parses: List<ParseResults<SuggestionProvider>>): Validity {
         if (parses.isEmpty()) return Validity.INVALID
         val ok = parses.count { it.succeeded() }
         return when (ok) {
