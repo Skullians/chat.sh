@@ -140,14 +140,6 @@ object ExpansionFormatter : EditBox.TextFormatter {
         }
     }
 
-    private fun ParseResults<ClientSuggestionProvider>.succeeded(): Boolean {
-        if (reader.canRead() && !reader.remaining.isBlank()) return false
-        var ctx = context
-        while (true) {
-            if (ctx.command != null) return true
-            ctx = ctx.child ?: return false
-        }
-    }
 
     private fun colorRegions(raw: String, styles: Array<Style>, validity: Validity) {
         val colour = validity.style

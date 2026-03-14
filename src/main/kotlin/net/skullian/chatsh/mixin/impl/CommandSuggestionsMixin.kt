@@ -13,6 +13,7 @@ import net.skullian.chatsh.expansion.ChatExpander.containsGlob
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 import net.skullian.chatsh.expansion.brig.ExpansionFormatter
 import net.skullian.chatsh.expansion.brig.GlobSuggestionInjector
+import net.skullian.chatsh.expansion.brig.isExecutable
 import net.skullian.chatsh.mixin.accessor.CommandSuggestionsAccessor
 import net.skullian.chatsh.mixin.accessor.EditBoxAccessor
 import org.spongepowered.asm.mixin.Final
@@ -101,15 +102,8 @@ abstract class CommandSuggestionsMixin {
             val error: String? = when {
                 parse.reader.canRead() && !parse.reader.remaining.isBlank() ->
                     "Unexpected: '${parse.reader.remaining.take(16)}'"
-                else -> {
-                    var ctx = parse.context
-                    var executable = false
-                    while (true) {
-                        if (ctx.command != null) { executable = true; break }
-                        ctx = ctx.child ?: break
-                    }
-                    if (executable) null else "Incomplete command"
-                }
+                !parse.isExecutable() -> "Incomplete command"
+                else -> null
             }
             cmd to error
         }

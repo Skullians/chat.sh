@@ -81,7 +81,7 @@ abstract class ChatScreenMixin {
         at = [At("HEAD")]
     )
     private fun onRender(graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float, ci: CallbackInfo) {
-        ExpansionRenderer.render(graphics, asScreen.width, asScreen.height)
+        ExpansionRenderer.render(graphics, input.value, asScreen.width, asScreen.height)
     }
 
     @Inject(

@@ -8,7 +8,6 @@ import net.skullian.chatsh.ChatSh
 import net.skullian.chatsh.expansion.ChatExpander
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 import net.skullian.chatsh.expansion.brig.BrigadierCtx
-import org.slf4j.LoggerFactory
 
 /**
  * This is a class.
@@ -31,19 +30,11 @@ object ExpansionRenderer {
     private const val MORE_COLOR = 0xFF888888.toInt()
     private const val COUNT_COLOR = 0xFF55FF55.toInt()
 
-    fun render(graphics: GuiGraphics, screenWidth: Int, screenHeight: Int) {
+    fun render(graphics: GuiGraphics, input: String, screenWidth: Int, screenHeight: Int) {
         val client = Minecraft.getInstance()
         val font = client.font
 
         val suggestionsHeight = BrigadierCtx.getSuggestionsListHeight()
-
-        val input = client.screen?.let {
-            try {
-                val field = it.javaClass.getDeclaredField("input")
-                    .also { f -> f.isAccessible = true }
-                (field.get(it) as? net.minecraft.client.gui.components.EditBox)?.value
-            } catch (_: Exception) { null }
-        } ?: return
 
         if (input.isBlank() || !input.hasShellSyntax()) return
 
