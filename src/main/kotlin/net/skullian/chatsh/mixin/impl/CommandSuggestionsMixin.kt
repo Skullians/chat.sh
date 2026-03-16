@@ -37,11 +37,11 @@ abstract class CommandSuggestionsMixin {
     @Inject(method = ["<init>"], at = [At("TAIL")])
     private fun onInit(ci: CallbackInfo) {
         //? if >=1.21.11 {
-        /*(input as EditBoxAccessor).getFormatters().add(0, ExpansionFormatter)
-        *///?} else {
-        val acc = input as EditBoxAccessor
+        (input as EditBoxAccessor).getFormatters().add(0, ExpansionFormatter)
+        //?} else {
+        /*val acc = input as EditBoxAccessor
         GlobSuggestionInjector.install(input, acc)
-        //?}
+        *///?}
     }
 
     @Inject(method = ["updateCommandInfo"], at = [At("RETURN")])

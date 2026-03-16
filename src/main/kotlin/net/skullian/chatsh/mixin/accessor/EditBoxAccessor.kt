@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.gen.Accessor
 @Mixin(EditBox::class)
 interface EditBoxAccessor {
     //? if >=1.21.11 {
-    /*@Accessor("formatters")
+    @Accessor("formatters")
     fun getFormatters(): MutableList<EditBox.TextFormatter>
-    *///?} else {
-    @get:Accessor("formatter")
+    //?} else {
+    /*@get:Accessor("formatter")
     val formatter: java.util.function.BiFunction<String, Int, FormattedCharSequence>
-    //?}
+    *///?}
 }

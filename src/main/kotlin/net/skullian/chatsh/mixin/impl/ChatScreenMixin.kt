@@ -47,10 +47,7 @@ abstract class ChatScreenMixin {
         if (!message.hasShellSyntax()) return
 
         when (val result = ChatSh.rootDispatcher.dispatch(message)) {
-            DispatchResult.NORMAL -> {
-                ci.cancel()
-                Minecraft.getInstance().setScreen(null)
-            }
+            DispatchResult.NORMAL,
             DispatchResult.EXPANDED -> {
                 ci.cancel()
 
@@ -92,9 +89,9 @@ abstract class ChatScreenMixin {
         BrigadierCtx.clear()
 
         //? if >=1.21.11 {
-        /*if (input.value.hasShellSyntax()) { // temporary fix that will be permanent
+        if (input.value.hasShellSyntax()) { // temporary fix that will be permanent
             Minecraft.getInstance().gui.chat.discardDraft()
         }
-        *///?}
+        //?}
     }
 }

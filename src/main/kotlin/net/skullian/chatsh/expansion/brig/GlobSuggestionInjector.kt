@@ -21,11 +21,11 @@ import java.util.concurrent.CompletableFuture
 internal object GlobSuggestionInjector {
 
     //? if <1.21.11 {
-    fun install(input: EditBox, acc: EditBoxAccessor) {
+    /*fun install(input: EditBox, acc: EditBoxAccessor) {
         val prev = acc.formatter
         input.setFormatter(java.util.function.BiFunction { s, i -> ExpansionFormatter.format(s, i) ?: prev.apply(s, i) })
     }
-    //?}
+    *///?}
 
     fun start(
         raw: String,

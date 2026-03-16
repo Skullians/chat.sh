@@ -4,8 +4,8 @@ import com.mojang.brigadier.ParseResults
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 //? if >=1.21.11 {
-/*import net.minecraft.client.gui.components.EditBox
-*///?}
+import net.minecraft.client.gui.components.EditBox
+//?}
 import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
 import net.skullian.chatsh.ChatSh
@@ -13,10 +13,10 @@ import net.skullian.chatsh.expansion.ChatExpander
 import net.skullian.chatsh.expansion.ChatExpander.hasShellSyntax
 
 //? if >=1.21.11 {
-/*object ExpansionFormatter : EditBox.TextFormatter {
-*///?} else {
-object ExpansionFormatter {
-//?}
+object ExpansionFormatter : EditBox.TextFormatter {
+//?} else {
+/*object ExpansionFormatter {
+*///?}
 
     private val ARGUMENT_STYLES = listOf(
         Style.EMPTY.withColor(ChatFormatting.AQUA),
@@ -35,10 +35,10 @@ object ExpansionFormatter {
     private var cachedResult: FormattedCharSequence? = null
 
     //? if >=1.21.11 {
-    /*override fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
-    *///?} else {
-    fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
-    //?}
+    override fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
+    //?} else {
+    /*fun format(raw: String, cursorOffset: Int): FormattedCharSequence? {
+    *///?}
         if (!raw.startsWith("/") || !raw.hasShellSyntax()) {
             cachedInput = null; cachedResult = null
             return null
