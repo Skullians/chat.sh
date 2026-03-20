@@ -47,10 +47,7 @@ abstract class ChatScreenMixin {
         if (!message.hasShellSyntax()) return
 
         when (val result = ChatSh.rootDispatcher.dispatch(message)) {
-            DispatchResult.NORMAL -> {
-                ci.cancel()
-                Minecraft.getInstance().setScreen(null)
-            }
+            DispatchResult.NORMAL,
             DispatchResult.EXPANDED -> {
                 ci.cancel()
 
@@ -81,7 +78,7 @@ abstract class ChatScreenMixin {
         at = [At("HEAD")]
     )
     private fun onRender(graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float, ci: CallbackInfo) {
-        ExpansionRenderer.render(graphics, asScreen.width, asScreen.height)
+        ExpansionRenderer.render(graphics, input.value, asScreen.width, asScreen.height)
     }
 
     @Inject(
@@ -91,8 +88,10 @@ abstract class ChatScreenMixin {
     private fun onRemoved(ci: CallbackInfo) {
         BrigadierCtx.clear()
 
+        //? if >=1.21.11 {
         if (input.value.hasShellSyntax()) { // temporary fix that will be permanent
             Minecraft.getInstance().gui.chat.discardDraft()
         }
+        //?}
     }
 }

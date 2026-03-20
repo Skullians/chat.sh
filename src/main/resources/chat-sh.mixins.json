@@ -3,8 +3,10 @@
 	"package": "net.skullian.chatsh.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+        "accessor.EditBoxAccessor",
         "accessor.CommandSuggestionsAccessor",
-		"impl.ChatScreenMixin"
+		"impl.ChatScreenMixin",
+        "impl.CommandSuggestionsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

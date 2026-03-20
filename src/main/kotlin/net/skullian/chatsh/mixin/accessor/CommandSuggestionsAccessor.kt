@@ -3,7 +3,7 @@ package net.skullian.chatsh.mixin.accessor
 import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.suggestion.Suggestions
 import net.minecraft.client.gui.components.CommandSuggestions
-import net.minecraft.client.multiplayer.ClientSuggestionProvider
+import net.skullian.chatsh.expansion.brig.SuggestionProvider
 import net.minecraft.util.FormattedCharSequence
 import org.spongepowered.asm.mixin.Mixin
 import org.spongepowered.asm.mixin.gen.Accessor
@@ -23,10 +23,13 @@ interface CommandSuggestionsAccessor {
     var pendingSuggestions: CompletableFuture<Suggestions>?
 
     @get:Accessor("currentParse")
-    val currentParse: ParseResults<ClientSuggestionProvider>?
+    val currentParse: ParseResults<SuggestionProvider>?
 
     @get:Accessor("commandUsage")
     val commandUsage: List<FormattedCharSequence>
+
+    @get:Accessor("keepSuggestions")
+    val keepSuggestions: Boolean
 
 }
 
